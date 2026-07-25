@@ -1,0 +1,2204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <title>The First Stone</title>
+
+  <meta
+    name="description"
+    content="An interactive cornerstone mystery from Escape Events."
+  >
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The First Stone">
+  <meta
+    property="og:description"
+    content="An interactive cornerstone mystery from Escape Events."
+  >
+  <meta property="og:image" content="/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: #f1eee7;
+      color: #173f5f;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      display: none;
+      min-height: 100vh;
+      padding:
+        34px
+        22px
+        calc(150px + env(safe-area-inset-bottom));
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /*
+      ============================================
+      PREFACE AND STORY PAGES
+      ============================================
+    */
+
+    .preface-inner,
+    .story-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: min(820px, 100%);
+      min-height: calc(
+        100vh - 34px - 150px - env(safe-area-inset-bottom)
+      );
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .preface-content,
+    .story-content {
+      width: 100%;
+    }
+
+    .preface-label,
+    .story-label {
+      margin-bottom: 20px;
+      color: #517a98;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .preface-text {
+      max-width: 760px;
+      margin: 0 auto;
+      font-size: clamp(27px, 5vw, 48px);
+      font-weight: normal;
+      line-height: 1.3;
+    }
+
+    .orientation-text {
+      max-width: 680px;
+      margin: 0 auto;
+      font-size: clamp(25px, 4.6vw, 42px);
+      line-height: 1.35;
+    }
+
+    .cornerstone-guide {
+      display: none;
+      width: min(360px, 82%);
+      height: auto;
+      margin: 22px auto 0;
+      border: 1px solid rgba(23, 63, 95, 0.25);
+      border-radius: 3px;
+      box-shadow: 0 8px 22px rgba(23, 63, 95, 0.14);
+    }
+
+    .cornerstone-guide.visible {
+      display: block;
+      animation: revealNote 420ms ease both;
+    }
+
+    .help-button {
+      display: block;
+      margin: 24px auto 0;
+    }
+
+    .preface-divider {
+      width: 78px;
+      height: 1px;
+      margin: 34px auto;
+      background: rgba(81, 122, 152, 0.65);
+    }
+
+    .chiasmus-intro {
+      max-width: 760px;
+      margin: 0 auto;
+      font-size: clamp(25px, 4.6vw, 42px);
+      line-height: 1.35;
+    }
+
+    .greek-meaning {
+      display: block;
+      margin-top: 12px;
+      color: #517a98;
+      font-size: 0.8em;
+    }
+
+    .preface-screen-two .preface-text {
+      font-size: clamp(24px, 4.6vw, 42px);
+    }
+
+    .preface-screen-two .preface-text + .preface-text {
+      margin-top: 20px;
+    }
+
+    .chiasmus-diagram {
+      display: none;
+      width: min(560px, 100%);
+      margin: 22px auto 0;
+      padding: 16px;
+      border: 1px solid rgba(23, 63, 95, 0.28);
+      border-radius: 3px;
+      background: rgba(248, 243, 232, 0.85);
+      box-shadow: 0 8px 22px rgba(23, 63, 95, 0.08);
+      text-align: left;
+    }
+
+    .chiasmus-diagram.visible {
+      display: block;
+      animation: revealNote 420ms ease both;
+    }
+
+    .show-me-button {
+      display: block;
+      margin: 24px auto 0;
+    }
+
+    .diagram-title {
+      margin: 0 0 12px;
+      color: #517a98;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .diagram-frame {
+      border: 2px solid rgba(23, 63, 95, 0.55);
+      background: #fffdf8;
+    }
+
+    .diagram-row {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      align-items: center;
+      min-height: 66px;
+      border-top: 1px solid rgba(23, 63, 95, 0.2);
+    }
+
+    .diagram-row:first-child {
+      border-top: 0;
+    }
+
+    .diagram-row.center-row {
+      background: rgba(81, 122, 152, 0.10);
+    }
+
+    .diagram-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 66px;
+      padding: 10px 8px;
+      border-right: 1px solid rgba(23, 63, 95, 0.2);
+      color: #517a98;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .diagram-content {
+      padding: 12px 14px;
+      color: #173f5f;
+      font-size: clamp(18px, 2.7vw, 24px);
+      line-height: 1.35;
+      text-align: center;
+    }
+
+    .diagram-note {
+      margin: 12px 0 0;
+      color: #517a98;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .milestone-heading {
+      max-width: 720px;
+      margin: 0 auto 30px;
+      font-size: clamp(25px, 4.5vw, 40px);
+      font-weight: normal;
+      line-height: 1.28;
+    }
+
+    /*
+      Matches the Founders’ Secret paper-card treatment
+      from the Overview Mystery page.
+    */
+
+    .mystery-letter {
+      position: relative;
+      width: min(680px, 100%);
+      margin: 0 auto;
+      padding: 30px;
+      border: 1px solid rgba(23, 63, 95, 0.25);
+      border-radius: 2px;
+      background: #f8f3e8;
+      box-shadow:
+        0 12px 30px rgba(23, 63, 95, 0.12),
+        inset 0 0 0 6px rgba(255, 255, 255, 0.24);
+      text-align: left;
+      transform: none;
+    }
+
+    .letter-label {
+      margin: 0 0 18px;
+      color: #517a98;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.19em;
+      line-height: 1.45;
+      text-transform: uppercase;
+    }
+
+    .letter-text {
+      margin: 0;
+      color: #173f5f;
+      font-size: clamp(20px, 3.3vw, 28px);
+      line-height: 1.5;
+    }
+
+    .letter-text + .letter-text {
+      margin-top: 19px;
+    }
+
+    .story-instruction {
+      max-width: 680px;
+      margin: 28px auto 0;
+      color: #517a98;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(17px, 2.8vw, 22px);
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    /*
+      ============================================
+      BUTTONS
+      ============================================
+    */
+
+    .primary-button {
+      display: inline-block;
+      min-width: 190px;
+      margin-top: 38px;
+      padding: 14px 22px;
+      border: 1px solid #173f5f;
+      border-radius: 3px;
+      background: #173f5f;
+      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition:
+        background 180ms ease,
+        border-color 180ms ease,
+        transform 180ms ease;
+    }
+
+    .primary-button:hover {
+      border-color: #255c83;
+      background: #255c83;
+      transform: translateY(-1px);
+    }
+
+    /*
+      ============================================
+      PUZZLE PAGE
+      ============================================
+    */
+
+    .puzzle-card {
+      width: min(1200px, 100%);
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 8px 0;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .instructions {
+      max-width: 760px;
+      margin: 0 auto 20px;
+      font-size: 19px;
+      line-height: 1.5;
+    }
+
+    .image-wrapper {
+      position: relative;
+      width: 100%;
+      margin: 0 auto;
+      overflow: hidden;
+      border: 2px solid #517a98;
+      background: #d8d5ce;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
+      line-height: 0;
+      touch-action: manipulation;
+    }
+
+    .cornerstone-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .wrong-area {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .hotspot {
+      position: absolute;
+      z-index: 2;
+      padding: 0;
+      border: 2px solid transparent;
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      transition:
+        background 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+    }
+
+    .hotspot:hover:not(.found) {
+      border-color: rgba(255, 215, 70, 0.45);
+    }
+
+    .hotspot.found {
+      border-color: rgba(31, 126, 73, 0.95);
+      background: rgba(61, 211, 115, 0.22);
+      box-shadow:
+        inset 0 0 0 2px rgba(255, 255, 255, 0.4),
+        0 0 12px rgba(31, 126, 73, 0.65);
+      cursor: default;
+    }
+
+    .distractor-hotspot {
+      z-index: 3;
+    }
+
+    .distractor-hotspot.selected-wrong {
+      border-color: rgba(168, 50, 50, 0.95);
+      background: rgba(220, 70, 70, 0.24);
+      box-shadow:
+        inset 0 0 0 2px rgba(255, 255, 255, 0.38),
+        0 0 12px rgba(168, 50, 50, 0.58);
+    }
+
+    #present-one {
+      left: 26.5%;
+      top: 24.5%;
+      width: 50%;
+      height: 11.5%;
+    }
+
+    #dubois-one {
+      left: 25.3%;
+      top: 45.5%;
+      width: 15%;
+      height: 10.5%;
+    }
+
+    #dubois-two {
+      left: 25.3%;
+      top: 55.5%;
+      width: 15%;
+      height: 10.5%;
+    }
+
+    #present-two {
+      left: 42%;
+      top: 64%;
+      width: 45%;
+      height: 12%;
+    }
+
+    /* Red, selectable distractors */
+
+    #stone-one {
+      left: 38%;
+      top: 5.2%;
+      width: 15.5%;
+      height: 10.5%;
+    }
+
+    #stone-two {
+      left: 5.5%;
+      top: 35.2%;
+      width: 16.5%;
+      height: 10.5%;
+    }
+
+    #john-one {
+      left: 63%;
+      top: 15.2%;
+      width: 10.5%;
+      height: 10.5%;
+    }
+
+    #john-two {
+      left: 34.2%;
+      top: 35.2%;
+      width: 10.5%;
+      height: 10.5%;
+    }
+
+    #john-three {
+      left: 10.5%;
+      top: 45.2%;
+      width: 11.5%;
+      height: 10.5%;
+    }
+
+    /*
+      These smaller church hotspots sit inside the larger
+      “the present church” phrase hotspots. Players can still
+      select the phrase by tapping elsewhere inside the green area.
+    */
+
+    #church-one {
+      left: 25.5%;
+      top: 15.2%;
+      width: 16.5%;
+      height: 10.5%;
+    }
+
+    #church-two {
+      left: 58%;
+      top: 25.2%;
+      width: 18.5%;
+      height: 11%;
+    }
+
+    #church-three {
+      left: 72.5%;
+      top: 65.2%;
+      width: 15.5%;
+      height: 11%;
+    }
+
+    #church-four {
+      left: 46.5%;
+      top: 35.2%;
+      width: 15.5%;
+      height: 10.5%;
+    }
+
+    #first-one {
+      left: 10.5%;
+      top: 15.2%;
+      width: 12.5%;
+      height: 10.5%;
+    }
+
+    #first-two {
+      left: 86%;
+      top: 25.2%;
+      width: 12.5%;
+      height: 11%;
+    }
+
+    .status-panel {
+      min-height: 100px;
+      margin-top: 18px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .puzzle-hints {
+      display: none;
+    }
+
+    .puzzle-hints.visible {
+      display: block;
+      animation: revealNote 300ms ease both;
+    }
+
+    .puzzle-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .puzzle-controls .reset-button {
+      margin-top: 0;
+    }
+
+    #puzzleHelpButton {
+      font-weight: 700;
+    }
+
+    .skip-button {
+      padding: 7px 12px;
+      border: 1px solid #173f5f;
+      border-radius: 3px;
+      background: transparent;
+      color: #173f5f;
+      font-size: 12px;
+      font-weight: 400;
+      cursor: pointer;
+    }
+
+    .skip-button:hover {
+      background: #173f5f;
+      color: #ffffff;
+    }
+
+    .puzzle-counter {
+      margin-bottom: 8px;
+      color: #517a98;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .message {
+      min-height: 27px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .message.success {
+      color: #217e4b;
+    }
+
+    .message.error {
+      color: #a83232;
+    }
+
+    .completion-message {
+      display: none;
+      margin: 12px auto 0;
+      color: #217e4b;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .completion-message.visible {
+      display: block;
+      animation: revealNote 420ms ease both;
+    }
+
+    .solved-x-note {
+      display: none;
+      max-width: 620px;
+      margin: 15px auto 0;
+      color: #517a98;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .solved-x-note.visible {
+      display: block;
+      animation: revealNote 420ms ease both;
+    }
+
+    .next-button {
+      display: none;
+      width: min(320px, 100%);
+      margin: 18px auto 0;
+      padding: 14px 18px;
+      border: 1px solid #173f5f;
+      border-radius: 3px;
+      background: #173f5f;
+      color: #ffffff;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .next-button:hover {
+      background: #255c83;
+      border-color: #255c83;
+    }
+
+    .reset-button {
+      margin-top: 12px;
+      padding: 7px 12px;
+      border: 1px solid #8298a8;
+      border-radius: 3px;
+      background: transparent;
+      color: #647888;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    @keyframes revealNote {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /*
+      ============================================
+      OVERVIEW-STYLE BOTTOM NAVIGATION
+      ============================================
+    */
+
+    .bottom-nav {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      display: grid;
+      grid-template-columns: 72px 1fr 72px;
+      align-items: center;
+      height: calc(82px + env(safe-area-inset-bottom));
+      padding:
+        0
+        18px
+        env(safe-area-inset-bottom);
+      border-top: 1px solid rgba(23, 63, 95, 0.18);
+      background: rgba(241, 238, 231, 0.97);
+      box-shadow: 0 -8px 24px rgba(23, 63, 95, 0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-button {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      margin: 0 auto;
+      padding: 0;
+      border: 1px solid rgba(23, 63, 95, 0.55);
+      border-radius: 50%;
+      background: transparent;
+      color: #173f5f;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      transition:
+        color 180ms ease,
+        background 180ms ease,
+        border-color 180ms ease;
+    }
+
+    .nav-button:hover:not(:disabled) {
+      border-color: #173f5f;
+      background: #173f5f;
+      color: #ffffff;
+    }
+
+    .nav-button:disabled {
+      opacity: 0.25;
+      cursor: default;
+    }
+
+    .progress-area {
+      min-width: 0;
+      text-align: center;
+    }
+
+    .screen-counter {
+      margin-bottom: 8px;
+      color: #517a98;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+    }
+
+    .progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .progress-dot {
+      width: 22px;
+      height: 7px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(81, 122, 152, 0.28);
+      cursor: pointer;
+      transition:
+        width 180ms ease,
+        background 180ms ease;
+    }
+
+    .progress-dot.active {
+      width: 30px;
+      background: #173f5f;
+    }
+
+    .progress-dot.locked {
+      opacity: 0.42;
+      cursor: default;
+    }
+
+    /*
+      ============================================
+      MOBILE
+      ============================================
+    */
+
+    @media (max-width: 420px) {
+      .screen {
+        padding:
+          28px
+          17px
+          calc(140px + env(safe-area-inset-bottom));
+      }
+
+      .preface-inner,
+      .story-inner {
+        min-height: calc(
+          100vh - 28px - 140px - env(safe-area-inset-bottom)
+        );
+      }
+
+      .preface-label,
+      .story-label {
+        margin-bottom: 16px;
+        font-size: 11px;
+      }
+
+      .orientation-text,
+      .chiasmus-intro {
+        font-size: clamp(23px, 7vw, 32px);
+      }
+
+      .preface-divider {
+        margin: 27px auto;
+      }
+
+      .preface-text {
+        font-size: clamp(24px, 7vw, 34px);
+      }
+
+      .milestone-heading {
+        margin-bottom: 25px;
+        font-size: clamp(24px, 7vw, 33px);
+      }
+
+      .mystery-letter {
+        padding: 30px 22px;
+      }
+
+      .letter-label {
+        font-size: 11px;
+      }
+
+      .letter-text {
+        font-size: clamp(19px, 5.8vw, 25px);
+      }
+
+      .story-instruction {
+        font-size: 17px;
+      }
+
+      .chiasmus-diagram {
+        padding: 13px;
+      }
+
+      .diagram-row {
+        grid-template-columns: 74px 1fr;
+        min-height: 58px;
+      }
+
+      .diagram-label {
+        min-height: 58px;
+        font-size: 11px;
+      }
+
+      .diagram-content {
+        padding: 10px 11px;
+        font-size: clamp(16px, 4.6vw, 20px);
+      }
+
+      .diagram-note {
+        font-size: 13px;
+      }
+
+      .primary-button {
+        width: min(300px, 100%);
+        margin-top: 30px;
+      }
+
+      .puzzle-screen {
+        padding-right: 8px;
+        padding-left: 8px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .instructions {
+        padding: 0 9px;
+        font-size: 17px;
+      }
+
+      #present-two {
+        width: 38%;
+      }
+
+      .bottom-nav {
+        grid-template-columns: 60px 1fr 60px;
+        padding-right: 10px;
+        padding-left: 10px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <!-- PAGE 1 -->
+    <section
+      class="screen preface-screen active"
+      data-screen="0"
+      aria-label="Find the cornerstone"
+    >
+      <div class="preface-inner">
+        <div class="preface-content">
+          <div class="preface-label">
+            The First Stone
+          </div>
+
+          <p class="orientation-text">
+            Find the old, large stone at the corner of the church
+            with writing on it.
+          </p>
+
+          <button
+            class="reset-button help-button"
+            id="helpButton"
+            type="button"
+            aria-expanded="false"
+            aria-controls="cornerstoneGuide"
+          >
+            Help me
+          </button>
+
+          <img
+            class="cornerstone-guide"
+            id="cornerstoneGuide"
+            src="https://drive.google.com/thumbnail?id=10xB_Jbcc7kvKCJkI2zS2yMbm9ZI0sjPI&sz=w1200"
+            alt="Blueprint guide showing where to find the cornerstone"
+          >
+
+          <button
+            class="primary-button"
+            id="firstContinueButton"
+            type="button"
+          >
+            At the Cornerstone
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2 -->
+    <section
+      class="screen preface-screen preface-screen-two"
+      data-screen="1"
+      aria-label="Chiasmus explanation"
+    >
+      <div class="preface-inner">
+        <div class="preface-content">
+          <div class="preface-label">
+            Chiasmus
+          </div>
+
+          <p class="preface-text">
+            Many ancient writings contain a hidden word pattern
+            called <em>chiasmus</em>.
+
+            <span class="greek-meaning">
+              <em>Chiasmus</em> is the Greek letter for “X.”
+            </span>
+          </p>
+
+          <p class="preface-text">
+            In <strong>chiasmus</strong>, a word or phrase is
+            repeated at the <em>top</em> and <em>bottom</em> of
+            a passage.
+          </p>
+
+          <p class="preface-text">
+            Another repetition marks the <em>center</em> of the
+            chiasmus.
+          </p>
+
+          <button
+            class="reset-button help-button show-me-button"
+            id="showMeButton"
+            type="button"
+            aria-expanded="false"
+            aria-controls="chiasmusDiagram"
+          >
+            Show me
+          </button>
+
+          <section
+            class="chiasmus-diagram"
+            id="chiasmusDiagram"
+            aria-label="Chiasmus diagram"
+          >
+            <p class="diagram-title">
+              How a chiasmus works
+            </p>
+
+            <div class="diagram-frame">
+              <div class="diagram-row">
+                <div class="diagram-label">
+                  Top
+                </div>
+
+                <div class="diagram-content">
+                  building
+                </div>
+              </div>
+
+              <div class="diagram-row center-row">
+                <div class="diagram-label">
+                  Center
+                </div>
+
+                <div class="diagram-content">
+                  name
+                </div>
+              </div>
+
+              <div class="diagram-row center-row">
+                <div class="diagram-label">
+                  Center
+                </div>
+
+                <div class="diagram-content">
+                  name
+                </div>
+              </div>
+
+              <div class="diagram-row">
+                <div class="diagram-label">
+                  Bottom
+                </div>
+
+                <div class="diagram-content">
+                  building
+                </div>
+              </div>
+            </div>
+
+            <p class="diagram-note">
+              The same word appears at the top and bottom, while another repeated word marks the center.
+            </p>
+          </section>
+
+          <button
+            class="primary-button"
+            id="secondContinueButton"
+            type="button"
+          >
+            Examine the Cornerstone
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 3: CORNERSTONE PUZZLE -->
+    <section
+      class="screen puzzle-screen"
+      data-screen="2"
+      aria-label="First Stone puzzle"
+    >
+      <div class="puzzle-card">
+        <h1>First Stone</h1>
+
+        <p class="instructions">
+          Tap the words or phrases that appear twice to find the hidden pattern.
+        </p>
+
+        <div
+          class="image-wrapper"
+          aria-label="Interactive cornerstone inscription"
+        >
+          <img
+            class="cornerstone-image"
+            src="https://drive.google.com/thumbnail?id=1tYVuw06O9O4wFgZHwkfq0jduGiPEspKP&sz=w2000"
+            alt="Historic cornerstone inscription"
+            draggable="false"
+          >
+
+          <button
+            class="wrong-area"
+            type="button"
+            aria-label="Cornerstone inscription"
+          ></button>
+
+          <button
+            id="present-one"
+            class="hotspot"
+            type="button"
+            data-answer="present"
+            aria-label="Select the first occurrence of the present church"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            id="dubois-one"
+            class="hotspot"
+            type="button"
+            data-answer="dubois"
+            aria-label="Select the first occurrence of Dubois"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            id="dubois-two"
+            class="hotspot"
+            type="button"
+            data-answer="dubois"
+            aria-label="Select the second occurrence of Dubois"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            id="present-two"
+            class="hotspot"
+            type="button"
+            data-answer="present"
+            aria-label="Select the second occurrence of the present church"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            id="stone-one"
+            class="hotspot distractor-hotspot"
+            type="button"
+            data-distractor="stone"
+            aria-label="Select the first occurrence of stone"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            id="stone-two"
+            class="hotspot distractor-hotspot"
+            type="button"
+            data-distractor="stone"
+            aria-label="Select the second occurrence of stone"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            id="john-one"
+            class="hotspot distractor-hotspot"
+            type="button"
+            data-distractor="john"
+            aria-label="Select the first occurrence of John"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            id="john-two"
+            class="hotspot distractor-hotspot"
+            type="button"
+            data-distractor="john"
+            aria-label="Select the second occurrence of John"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            id="john-three"
+            class="hotspot distractor-hotspot"
+            type="button"
+            data-distractor="john"
+            aria-label="Select the third occurrence of John"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            id="church-one"
+            class="hotspot distractor-hotspot"
+            type="button"
+            data-distractor="church"
+            aria-label="Select an occurrence of church"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            id="church-two"
+            class="hotspot distractor-hotspot"
+            type="button"
+            data-distractor="church"
+            aria-label="Select an occurrence of church within the first repeated phrase"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            id="church-three"
+            class="hotspot distractor-hotspot"
+            type="button"
+            data-distractor="church"
+            aria-label="Select an occurrence of church within the second repeated phrase"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            id="church-four"
+            class="hotspot distractor-hotspot"
+            type="button"
+            data-distractor="church"
+            aria-label="Select the occurrence of church in St. John's Church"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            id="first-one"
+            class="hotspot distractor-hotspot"
+            type="button"
+            data-distractor="first"
+            aria-label="Select the first occurrence of first"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            id="first-two"
+            class="hotspot distractor-hotspot"
+            type="button"
+            data-distractor="first"
+            aria-label="Select the second occurrence of first"
+            aria-pressed="false"
+          ></button>
+        </div>
+
+        <section class="status-panel">
+          <div
+            id="puzzleHints"
+            class="puzzle-hints"
+          >
+            <div
+              id="puzzleCounter"
+              class="puzzle-counter"
+            >
+              0 of 4 found
+            </div>
+
+            <div
+              id="message"
+              class="message"
+              role="status"
+              aria-live="polite"
+            ></div>
+          </div>
+
+          <div
+            id="completionMessage"
+            class="completion-message"
+            role="status"
+            aria-live="polite"
+          >
+            Success. You found the chiasmus!
+          </div>
+
+          <p
+            id="solvedXNote"
+            class="solved-x-note"
+          >
+            Usually, X marks the <em>spot</em>.
+            Here, X marks the <em>start</em>.
+          </p>
+
+          <button
+            id="puzzleContinueButton"
+            class="next-button"
+            type="button"
+          >
+            Continue
+          </button>
+
+          <div class="puzzle-controls">
+            <button
+              id="puzzleHelpButton"
+              class="reset-button"
+              type="button"
+              aria-expanded="false"
+              aria-controls="puzzleHints"
+            >
+              Help me
+            </button>
+
+            <button
+              id="resetButton"
+              class="reset-button"
+              type="button"
+            >
+              Reset puzzle
+            </button>
+
+            <button
+              id="skipPuzzleButton"
+              class="skip-button"
+              type="button"
+            >
+              Skip puzzle
+            </button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- PAGE 4 -->
+    <section
+      class="screen story-screen"
+      data-screen="3"
+      aria-label="Piece One: Message Subject"
+    >
+      <div class="story-inner">
+        <div class="story-content">
+          <div class="story-label">
+            Piece One: Message Subject
+          </div>
+
+          <h2 class="milestone-heading">
+            First milestone accomplished—you found the
+            <strong>chiasmus</strong>!
+          </h2>
+
+          <section
+            class="mystery-letter"
+            aria-label="The hidden letter's subject"
+          >
+            <div class="letter-label">
+              At the Center Is Dubois
+            </div>
+
+            <p class="letter-text">
+              Dubois is the subject of the hidden letter.
+            </p>
+
+            <p class="letter-text">
+              The founder of the church, John Dubois, was a priest
+              in Paris who fled the French Revolution.
+            </p>
+          </section>
+
+          <p class="story-instruction">
+            Find the nearby statue to discover why.
+          </p>
+
+          <button
+            class="primary-button"
+            id="twoWorldsButton"
+            type="button"
+          >
+            Move to the Next Puzzle
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- SAME NAVIGATION STYLE AS OVERVIEW -->
+  <nav
+    class="bottom-nav"
+    aria-label="Cornerstone page navigation"
+  >
+    <button
+      class="nav-button"
+      id="previousButton"
+      type="button"
+      aria-label="Previous page"
+      disabled
+    >
+      ←
+    </button>
+
+    <div class="progress-area">
+      <div
+        class="screen-counter"
+        id="screenCounter"
+      >
+        01 / 04
+      </div>
+
+      <div class="progress">
+        <button
+          class="progress-dot active"
+          type="button"
+          data-go-to="0"
+          aria-label="Go to page 1"
+        ></button>
+
+        <button
+          class="progress-dot"
+          type="button"
+          data-go-to="1"
+          aria-label="Go to page 2"
+        ></button>
+
+        <button
+          class="progress-dot"
+          type="button"
+          data-go-to="2"
+          aria-label="Go to the cornerstone puzzle"
+        ></button>
+
+        <button
+          class="progress-dot"
+          type="button"
+          data-go-to="3"
+          aria-label="Go to Piece One: Message Subject"
+        ></button>
+      </div>
+    </div>
+
+    <button
+      class="nav-button"
+      id="nextPageButton"
+      type="button"
+      aria-label="Next page"
+    >
+      →
+    </button>
+  </nav>
+
+  <script>
+    /*
+      Replace this with the RAW GitHub URL after the MP3 is uploaded.
+
+      Example:
+      https://raw.githubusercontent.com/USERNAME/REPOSITORY/main/audio/success.mp3
+    */
+    const SUCCESS_AUDIO_URL =
+      "https://escape-events.github.io/cornerstone-audio/window-expanded.mp3";
+
+    const successAudio =
+      new Audio(SUCCESS_AUDIO_URL);
+
+    successAudio.preload = "auto";
+
+    /*
+      ============================================
+      PAGE NAVIGATION
+      ============================================
+    */
+
+    const screens =
+      [...document.querySelectorAll(".screen")];
+
+    const progressDots =
+      [...document.querySelectorAll(".progress-dot")];
+
+    const previousButton =
+      document.getElementById("previousButton");
+
+    const nextPageButton =
+      document.getElementById("nextPageButton");
+
+    const screenCounter =
+      document.getElementById("screenCounter");
+
+    const firstContinueButton =
+      document.getElementById("firstContinueButton");
+
+    const helpButton =
+      document.getElementById("helpButton");
+
+    const cornerstoneGuide =
+      document.getElementById("cornerstoneGuide");
+
+    const showMeButton =
+      document.getElementById("showMeButton");
+
+    const chiasmusDiagram =
+      document.getElementById("chiasmusDiagram");
+
+    const secondContinueButton =
+      document.getElementById("secondContinueButton");
+
+    const twoWorldsButton =
+      document.getElementById("twoWorldsButton");
+
+    let currentScreen = 0;
+
+    function showScreen(index) {
+      currentScreen = Math.max(
+        0,
+        Math.min(index, screens.length - 1)
+      );
+
+      screens.forEach((screen, screenIndex) => {
+        const isActive =
+          screenIndex === currentScreen;
+
+        screen.classList.toggle(
+          "active",
+          isActive
+        );
+
+        screen.setAttribute(
+          "aria-hidden",
+          isActive ? "false" : "true"
+        );
+      });
+
+      progressDots.forEach((dot, dotIndex) => {
+        const isActive =
+          dotIndex === currentScreen;
+
+        const isLockedFourthDot =
+          dotIndex === 3 &&
+          currentScreen < 3;
+
+        dot.classList.toggle(
+          "active",
+          isActive
+        );
+
+        dot.classList.toggle(
+          "locked",
+          isLockedFourthDot
+        );
+
+        dot.setAttribute(
+          "aria-current",
+          isActive ? "page" : "false"
+        );
+
+        dot.setAttribute(
+          "aria-disabled",
+          isLockedFourthDot ? "true" : "false"
+        );
+      });
+
+      previousButton.disabled =
+        currentScreen === 0;
+
+      nextPageButton.disabled =
+        currentScreen === screens.length - 1 ||
+        currentScreen === 2;
+
+      screenCounter.textContent =
+        `${String(currentScreen + 1).padStart(2, "0")} / ` +
+        `${String(screens.length).padStart(2, "0")}`;
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    previousButton.addEventListener(
+      "click",
+      () => {
+        showScreen(currentScreen - 1);
+      }
+    );
+
+    nextPageButton.addEventListener(
+      "click",
+      () => {
+        showScreen(currentScreen + 1);
+      }
+    );
+
+    helpButton.addEventListener(
+      "click",
+      () => {
+        const isVisible =
+          cornerstoneGuide.classList.toggle(
+            "visible"
+          );
+
+        helpButton.setAttribute(
+          "aria-expanded",
+          isVisible ? "true" : "false"
+        );
+
+        helpButton.textContent =
+          isVisible ? "Hide help" : "Help me";
+      }
+    );
+
+    firstContinueButton.addEventListener(
+      "click",
+      () => {
+        showScreen(1);
+      }
+    );
+
+    showMeButton.addEventListener(
+      "click",
+      () => {
+        const isVisible =
+          chiasmusDiagram.classList.toggle(
+            "visible"
+          );
+
+        showMeButton.setAttribute(
+          "aria-expanded",
+          isVisible ? "true" : "false"
+        );
+
+        showMeButton.textContent =
+          isVisible ? "Hide me" : "Show me";
+      }
+    );
+
+    secondContinueButton.addEventListener(
+      "click",
+      () => {
+        showScreen(2);
+      }
+    );
+
+    progressDots.forEach((dot) => {
+      dot.addEventListener(
+        "click",
+        () => {
+          const targetScreen =
+            Number(dot.dataset.goTo);
+
+          if (
+            targetScreen === 3 &&
+            currentScreen < 3
+          ) {
+            return;
+          }
+
+          showScreen(targetScreen);
+        }
+      );
+    });
+
+    twoWorldsButton.addEventListener(
+      "click",
+      () => {
+        window.location.href =
+          "https://www.escape-events.fun/two-worlds-puzzle";
+      }
+    );
+
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        const activeTag =
+          document.activeElement
+            ?.tagName
+            ?.toLowerCase();
+
+        if (
+          activeTag === "input" ||
+          activeTag === "textarea"
+        ) {
+          return;
+        }
+
+        if (event.key === "ArrowLeft") {
+          showScreen(currentScreen - 1);
+        }
+
+        if (
+          event.key === "ArrowRight" &&
+          currentScreen !== 2
+        ) {
+          showScreen(currentScreen + 1);
+        }
+      }
+    );
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    document.addEventListener(
+      "touchstart",
+      (event) => {
+        touchStartX =
+          event.changedTouches[0].screenX;
+
+        touchStartY =
+          event.changedTouches[0].screenY;
+      },
+      { passive: true }
+    );
+
+    document.addEventListener(
+      "touchend",
+      (event) => {
+        const touchEndX =
+          event.changedTouches[0].screenX;
+
+        const touchEndY =
+          event.changedTouches[0].screenY;
+
+        const horizontalDistance =
+          touchEndX - touchStartX;
+
+        const verticalDistance =
+          touchEndY - touchStartY;
+
+        if (
+          Math.abs(horizontalDistance) < 65 ||
+          Math.abs(horizontalDistance) <
+            Math.abs(verticalDistance)
+        ) {
+          return;
+        }
+
+        if (horizontalDistance < 0) {
+          if (currentScreen !== 2) {
+            showScreen(currentScreen + 1);
+          }
+        } else {
+          showScreen(currentScreen - 1);
+        }
+      },
+      { passive: true }
+    );
+
+    /*
+      ============================================
+      SUCCESS SOUND
+      ============================================
+    */
+
+    function playSuccessSound() {
+      const AudioContextClass =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+      if (!AudioContextClass) {
+        return;
+      }
+
+      const audioContext =
+        new AudioContextClass();
+
+      const masterGain =
+        audioContext.createGain();
+
+      masterGain.connect(
+        audioContext.destination
+      );
+
+      masterGain.gain.setValueAtTime(
+        0.0001,
+        audioContext.currentTime
+      );
+
+      masterGain.gain.exponentialRampToValueAtTime(
+        0.18,
+        audioContext.currentTime + 0.02
+      );
+
+      masterGain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        audioContext.currentTime + 0.75
+      );
+
+      const notes = [
+        {
+          frequency: 523.25,
+          delay: 0
+        },
+        {
+          frequency: 659.25,
+          delay: 0.12
+        },
+        {
+          frequency: 783.99,
+          delay: 0.24
+        }
+      ];
+
+      notes.forEach((note) => {
+        const oscillator =
+          audioContext.createOscillator();
+
+        const noteGain =
+          audioContext.createGain();
+
+        oscillator.type = "sine";
+        oscillator.frequency.value =
+          note.frequency;
+
+        noteGain.gain.setValueAtTime(
+          0.0001,
+          audioContext.currentTime + note.delay
+        );
+
+        noteGain.gain.exponentialRampToValueAtTime(
+          0.7,
+          audioContext.currentTime +
+            note.delay +
+            0.02
+        );
+
+        noteGain.gain.exponentialRampToValueAtTime(
+          0.0001,
+          audioContext.currentTime +
+            note.delay +
+            0.42
+        );
+
+        oscillator.connect(noteGain);
+        noteGain.connect(masterGain);
+
+        oscillator.start(
+          audioContext.currentTime + note.delay
+        );
+
+        oscillator.stop(
+          audioContext.currentTime +
+            note.delay +
+            0.45
+        );
+      });
+
+      window.setTimeout(
+        () => {
+          audioContext.close();
+        },
+        1000
+      );
+    }
+
+    /*
+      ============================================
+      CORNERSTONE PUZZLE
+      ============================================
+    */
+
+    const STORAGE_KEY =
+      "escapeCornerstonePuzzleSelections";
+
+    const hotspots =
+      [...document.querySelectorAll(
+        ".hotspot:not(.distractor-hotspot)"
+      )];
+
+    const distractorHotspots =
+      [...document.querySelectorAll(
+        ".distractor-hotspot"
+      )];
+
+    const wrongArea =
+      document.querySelector(".wrong-area");
+
+    const puzzleHints =
+      document.getElementById("puzzleHints");
+
+    const puzzleHelpButton =
+      document.getElementById("puzzleHelpButton");
+
+    const skipPuzzleButton =
+      document.getElementById("skipPuzzleButton");
+
+    const puzzleCounter =
+      document.getElementById("puzzleCounter");
+
+    const message =
+      document.getElementById("message");
+
+    const completionMessage =
+      document.getElementById(
+        "completionMessage"
+      );
+
+    const solvedXNote =
+      document.getElementById("solvedXNote");
+
+    const puzzleContinueButton =
+      document.getElementById(
+        "puzzleContinueButton"
+      );
+
+    const resetButton =
+      document.getElementById("resetButton");
+
+    let foundSelections =
+      loadSavedSelections();
+
+    function loadSavedSelections() {
+      try {
+        const saved = JSON.parse(
+          localStorage.getItem(STORAGE_KEY)
+        );
+
+        if (!Array.isArray(saved)) {
+          return [];
+        }
+
+        const validIds =
+          hotspots.map(
+            hotspot => hotspot.id
+          );
+
+        return saved.filter(
+          id => validIds.includes(id)
+        );
+      } catch {
+        return [];
+      }
+    }
+
+    function saveSelections() {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(foundSelections)
+      );
+    }
+
+    function markAsFound(hotspot) {
+      hotspot.classList.add("found");
+      hotspot.disabled = true;
+
+      hotspot.setAttribute(
+        "aria-pressed",
+        "true"
+      );
+    }
+
+    function restoreSelections() {
+      hotspots.forEach((hotspot) => {
+        if (
+          foundSelections.includes(
+            hotspot.id
+          )
+        ) {
+          markAsFound(hotspot);
+        }
+      });
+
+      updateProgress(false);
+    }
+
+    function selectCorrectArea(event) {
+      event.stopPropagation();
+
+      const hotspot =
+        event.currentTarget;
+
+      if (
+        hotspot.classList.contains("found")
+      ) {
+        return;
+      }
+
+      foundSelections.push(hotspot.id);
+
+      markAsFound(hotspot);
+      saveSelections();
+
+      if (
+        hotspot.dataset.answer === "present"
+      ) {
+        message.textContent =
+          'Correct — “the present church” appears twice.';
+      } else {
+        message.textContent =
+          'Correct — “Dubois” appears twice.';
+      }
+
+      message.className =
+        "message success";
+
+      updateProgress(true);
+    }
+
+    function selectDistractor(event) {
+      event.stopPropagation();
+
+      const hotspot =
+        event.currentTarget;
+
+      const isSelected =
+        hotspot.classList.toggle(
+          "selected-wrong"
+        );
+
+      hotspot.setAttribute(
+        "aria-pressed",
+        isSelected ? "true" : "false"
+      );
+
+      if (!isSelected) {
+        message.textContent = "";
+        message.className = "message";
+        return;
+      }
+
+      if (
+        hotspot.dataset.distractor === "stone"
+      ) {
+        message.textContent =
+          '“stone” is used twice but only at the top.';
+      } else if (
+        hotspot.dataset.distractor === "john"
+      ) {
+        message.textContent =
+          '“John” appears three times, not twice.';
+      } else if (
+        hotspot.dataset.distractor === "first"
+      ) {
+        message.textContent =
+          '“first” is used twice but only at the top.';
+      } else {
+        message.textContent =
+          '“church” is used four times, not twice. But is it part of a phrase?';
+      }
+
+      message.className =
+        "message error";
+    }
+
+    function showIncorrectMessage() {
+      message.textContent =
+        "That word isn’t used twice.";
+
+      message.className =
+        "message error";
+    }
+
+    function updateProgress(
+      announceCompletion
+    ) {
+      const total =
+        hotspots.length;
+
+      const found =
+        foundSelections.length;
+
+      puzzleCounter.textContent =
+        `${found} of ${total} occurrences found`;
+
+      if (found >= total) {
+        puzzleCounter.textContent =
+          "All repeated words found";
+
+        message.textContent = "";
+        message.className = "message";
+
+        completionMessage.classList.add(
+          "visible"
+        );
+
+        solvedXNote.classList.add(
+          "visible"
+        );
+
+        puzzleContinueButton.style.display =
+          "block";
+      } else {
+        completionMessage.classList.remove(
+          "visible"
+        );
+
+        solvedXNote.classList.remove(
+          "visible"
+        );
+
+        puzzleContinueButton.style.display =
+          "none";
+      }
+    }
+
+    function resetPuzzle() {
+      localStorage.removeItem(
+        STORAGE_KEY
+      );
+
+      foundSelections = [];
+
+      hotspots.forEach((hotspot) => {
+        hotspot.classList.remove("found");
+        hotspot.disabled = false;
+
+        hotspot.setAttribute(
+          "aria-pressed",
+          "false"
+        );
+      });
+
+      distractorHotspots.forEach(
+        (hotspot) => {
+          hotspot.classList.remove(
+            "selected-wrong"
+          );
+
+          hotspot.setAttribute(
+            "aria-pressed",
+            "false"
+          );
+        }
+      );
+
+      puzzleCounter.textContent =
+        "0 of 4 found";
+
+      message.textContent = "";
+      message.className = "message";
+
+      completionMessage.classList.remove(
+        "visible"
+      );
+
+      solvedXNote.classList.remove(
+        "visible"
+      );
+
+      puzzleContinueButton.style.display =
+        "none";
+    }
+
+    hotspots.forEach((hotspot) => {
+      hotspot.addEventListener(
+        "click",
+        selectCorrectArea
+      );
+    });
+
+    distractorHotspots.forEach(
+      (hotspot) => {
+        hotspot.addEventListener(
+          "click",
+          selectDistractor
+        );
+      }
+    );
+
+    wrongArea.addEventListener(
+      "click",
+      showIncorrectMessage
+    );
+
+    puzzleHelpButton.addEventListener(
+      "click",
+      () => {
+        const isVisible =
+          puzzleHints.classList.toggle(
+            "visible"
+          );
+
+        puzzleHelpButton.setAttribute(
+          "aria-expanded",
+          isVisible ? "true" : "false"
+        );
+
+        puzzleHelpButton.textContent =
+          isVisible ? "Hide help" : "Help me";
+      }
+    );
+
+    skipPuzzleButton.addEventListener(
+      "click",
+      () => {
+        showScreen(3);
+      }
+    );
+
+    resetButton.addEventListener(
+      "click",
+      resetPuzzle
+    );
+
+    puzzleContinueButton.addEventListener(
+      "click",
+      () => {
+        successAudio.currentTime = 0;
+
+        const playPromise =
+          successAudio.play();
+
+        if (
+          playPromise &&
+          typeof playPromise.catch === "function"
+        ) {
+          playPromise.catch(
+            (error) => {
+              console.warn(
+                "Success audio could not play:",
+                error
+              );
+            }
+          );
+        }
+
+        showScreen(3);
+      }
+    );
+
+    showScreen(0);
+    restoreSelections();
+  </script>
+</body>
+</html>

@@ -1355,13 +1355,14 @@
             Find the nearby statue to discover why.
           </p>
 
-          <button
+          <a
             class="primary-button"
-            id="twoWorldsButton"
-            type="button"
+            href="https://www.escape-events.fun/two-worlds-intro"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             Move to the Next Puzzle
-          </button>
+          </a>
         </div>
       </div>
     </section>
@@ -1484,9 +1485,6 @@
 
     const secondContinueButton =
       document.getElementById("secondContinueButton");
-
-    const twoWorldsButton =
-      document.getElementById("twoWorldsButton");
 
     let currentScreen = 0;
 
@@ -1639,14 +1637,6 @@
         }
       );
     });
-
-    twoWorldsButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "https://www.escape-events.fun/two-worlds-intro";
-      }
-    );
 
     document.addEventListener(
       "keydown",
